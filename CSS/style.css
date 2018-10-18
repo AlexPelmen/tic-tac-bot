@@ -1,0 +1,16 @@
+.game-cell{
+    width: 60px;
+    height: 60px;
+    background: #ddd;
+}
+
+.game-cell:hover{
+    background: #e7e7e7;
+}
+
+#gameSelector{
+    position: absolute;
+    width: 66px;
+    height: 66px;
+    border: 3px solid #87d9ff;
+}
