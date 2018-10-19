@@ -5,8 +5,8 @@ class Player{
 	}
 }
 
-const FIRST_PLAYER = new Player( "&#9675;", "figureX" );
-const SECOND_PLAYER = new Player( "&#128936;", "figureO" );
+const FIRST_PLAYER = new Player( "×", "figure-X" );
+const SECOND_PLAYER = new Player( "○", "figure-O" );
 
 class GameModel{
 	constructor(){
@@ -24,7 +24,7 @@ class GameModel{
 
 	documentLoad(){
 		//just select first one
-		$( $( ".game-cell" )[0] ).click();
+		$( $( ".game-cell" )[ this.gameW*2 ] ).click();
 	}
 
 	initField(){
@@ -41,14 +41,20 @@ class GameModel{
 	setFigure( bl ){		
 		var x = bl.attr( 'index-i' );
 		var y = bl.attr( 'index-j' );
-		this.Field[x][y] = this.whoPlays.char;	
+		this.Field[x][y] = this.whoPlays.char;
 		console.dir([x,y])	
 	}
 
 	selectFigure( bl ){
 		this.selectedCell = bl;
 	}
-	
+
+	switchPlayer(){
+		if( this.whoPlays == FIRST_PLAYER )
+			this.whoPlays = SECOND_PLAYER;
+		else
+			this.whoPlays = FIRST_PLAYER;
+	}
 }
 
 
@@ -112,7 +118,15 @@ class GameView{
 	//draw a figure in the block
 	setFigure( bl ){
 		bl.html( Model.whoPlays.char );
+		bl.addClass( "figure" );
 		bl.addClass( Model.whoPlays.cssClass );
+	}
+
+	switchMenuFigure(){
+		var f = $( ".menu__figure" );
+		f.html( f.html() == "×" ? "○" : "×" );
+		f.toggleClass( "figure-X" );
+		f.toggleClass( "figure-O" );
 	}
 }
 
@@ -135,5 +149,7 @@ class GameControl{
 		var bl = $( Model.selectedCell );	
 		Model.setFigure( bl );
 		View.setFigure( bl );
+		Model.switchPlayer();	
+		View.switchMenuFigure();
 	}
 }

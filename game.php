@@ -20,6 +20,10 @@
         <link rel="stylesheet" href="CSS/style.css" />
 	</head>
 	<body>
+		<div class = "menu" >
+			<p class = "menu__text" >Ход: </p>
+			<div class = "menu__figure figure figure-X" >×</div>
+		</div>
 		<div id = "gameSelector" ></div>
 		<div id = "gameField" ></div>
 		
