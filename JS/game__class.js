@@ -42,7 +42,10 @@ class GameModel{
 		var x = bl.attr( 'index-i' );
 		var y = bl.attr( 'index-j' );
 		this.Field[x][y] = this.whoPlays.char;
-		console.dir([x,y])	
+		Scanner.addPointToBorders( x, y );
+		var res = Scanner.checkWin();
+		if( res )
+			alert( "'" + res.player + "'" + " wins" )	
 	}
 
 	selectFigure( bl ){
@@ -147,9 +150,11 @@ class GameControl{
 
 	selectorDblClick(){
 		var bl = $( Model.selectedCell );	
-		Model.setFigure( bl );
-		View.setFigure( bl );
-		Model.switchPlayer();	
-		View.switchMenuFigure();
+		if( ! bl.hasClass( "figure" ) ){
+			Model.setFigure( bl );
+			View.setFigure( bl );
+			Model.switchPlayer();	
+			View.switchMenuFigure();
+		}
 	}
 }

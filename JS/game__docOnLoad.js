@@ -1,6 +1,10 @@
+var Scanner = new GameScannner;
+
 var Model = new GameModel;
 var View = new GameView;
 var Control = new GameControl;
+
+
 
 $( document ).ready( () => {
 	View.createGameField( Model.gameW, Model.gameH );

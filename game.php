@@ -14,6 +14,7 @@
 		<script src="bootstrap-4.0.0/bootstrap.min.js"></script>
 
 		<!--JS-->
+		<script src="JS/game__scanners.js" ></script>
 		<script src="JS/game__class.js" ></script>
 		<script src="JS/game__docOnLoad.js" ></script>
         <!-- Styles -->
