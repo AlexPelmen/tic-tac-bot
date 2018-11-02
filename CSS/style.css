@@ -2,6 +2,7 @@
     width: 60px;
     height: 60px;
     background: #ddd;
+    overflow: hidden;
 }
 
 .game-cell:hover{
