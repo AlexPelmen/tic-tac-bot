@@ -1,3 +1,5 @@
+var SHOW_WEIGHTS = false;
+
 class Player{
 	constructor( char, cssClass ){
 		this.char = char;
@@ -38,15 +40,13 @@ class GameModel{
 	}
 
 	//set the figure in the matrix
-	setFigure( bl ){		
-		var x = bl.attr( 'index-i' );
-		var y = bl.attr( 'index-j' );
+	setFigure( x, y ){	
 		this.Field[x][y] = this.whoPlays.char;
 		Scanner.addPointToBorders( x, y );
-		View.showWeights( x, y );
+		if( SHOW_WEIGHTS ) View.showWeights( x, y );
 
 		if( Scanner.checkWin( x, y ) )
-			alert( "'" + this.Field[x][y] + "'" + " wins" )	
+			alert( "'" + this.Field[x][y] + "'" + " wins" )
 	}
 
 	selectFigure( bl ){
@@ -134,8 +134,8 @@ class GameView{
 	}
 
 	showWeights( ){
-		var b = Scanner.gBorder;
-		console.dir( Scanner.gBorder )
+		var b = Object.create( Scanner.gBorder );
+		//console.dir( Scanner.gBorder )
 		b.top -= 5;
 		b.bottom += 5;
 		b.left -= 5;
@@ -144,19 +144,24 @@ class GameView{
 		if( b.top < 0 ) b.top = 0;
 		if( b.left < 0 ) b.left = 0;
 
-		for( var y = b.top; y < b.bottom; y++ )
-			for( var x = b.left; x < b.right; x++ ){
+		for( var y = b.top; y <= b.bottom; y++ )
+			for( var x = b.left; x <= b.right; x++ ){
 				this.showCellWeight( x, y );
 			}
-		console.log( "OK!!!" )
+		//console.log( "OK!!!" )
 	}
 
 	showCellWeight( x, y ){
 		var cell = $( ".game-cell[index-i=" + x + "][index-j=" + y + "]" );
-		cell.html( "" );
-		var p = $( "<p>", { class: "cell-weight" })
-		p.html( Scanner.countWeight( x, y ) )
-		cell.append( p );
+		var p = cell.children( ".cell-weight" );
+		p.html( Scanner.countWeight( x, y ) );
+	}
+
+	updateCellsForWeightsDisplay(){
+		var p = $( "<p>", {
+			class: "cell-weight"
+		})
+		$( ".game-cell" ).append( p );	
 	}
 }
 
@@ -176,12 +181,17 @@ class GameControl{
 	}
 
 	selectorDblClick(){
-		var bl = $( Model.selectedCell );	
+		var bl = $( Model.selectedCell );
 		if( ! bl.hasClass( "figure" ) ){
-			Model.setFigure( bl );
-			View.setFigure( bl );
-			Model.switchPlayer();	
+			var x = bl.attr( 'index-i' );
+			var y = bl.attr( 'index-j' );
+			Model.setFigure( x, y );
+			View.setFigure( bl );						
+			Model.switchPlayer();
 			View.switchMenuFigure();
 		}
+
+		if( Bot.botFig == Model.whoPlays.char )
+			Bot.makeMove();
 	}
 }

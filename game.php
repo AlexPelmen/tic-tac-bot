@@ -16,6 +16,7 @@
 		<!--JS-->
 		<script src="JS/game__scanners.js" ></script>
 		<script src="JS/game__class.js" ></script>
+		<script src="JS/game__bot.js" ></script>
 		<script src="JS/game__docOnLoad.js" ></script>
         <!-- Styles -->
         <link rel="stylesheet" href="CSS/style.css" />

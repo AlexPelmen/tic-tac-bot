@@ -169,6 +169,7 @@ class GameScannner{
 	checkWin( cellX, cellY ){
 		var res = null;	
 		var newFig = getFig(cellX,cellY);
+		if( ! newFig ) return false;
 
 		var res;
 		res = res || checkLine( cellX, cellY, 1, 0 ); //horizontal
@@ -183,6 +184,8 @@ class GameScannner{
 		}
 
 		function checkLine( x, y, dx, dy ){
+			x = +x;
+			y = +y;
 			var score = 0;
 			while( getFig( x - dx, y - dy ) == newFig ){		
 				x -= dx;	
@@ -228,10 +231,10 @@ class GameScannner{
 
 			[ "0", "45", "90", "135" ].forEach( ( p )=>{
 				if( this.isBreakPoint( atks[p] ) ){
-					console.log( "Break point" )
+					//console.log( "Break point" )
 					if( ++breakPoints == 2 ){
 						weight = 100;
-						console.log( "Pizdataya kletka" )
+						//console.log( "Pizdataya kletka" )
 						return;
 					}
 				}
