@@ -1,7 +1,7 @@
 class GameBot{
 
-	constructor(){
-		this.botFig = '○';	//○ or ×
+	constructor( fig ){
+		this.botFig = fig;	//○ or ×
 		this.lock = false;	//disable bot
 	}
 

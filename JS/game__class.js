@@ -171,7 +171,6 @@ class GameView{
 
 	showWinner( w ){
 		var st = $( "#statusText" );
-		console.dir( st )
 		st.html( w );
 
 		if( st.hasClass( "textX" ) ) 
@@ -256,6 +255,7 @@ class GameControl{
 		Model.Field = Model.initField();
 		View.hideWinner();
 		View.clearField();
+		View.updateCellsForWeightsDisplay();
 		Scanner.gBorder = {
 			left: 	Infinity,
 			top: 	Infinity,
@@ -284,7 +284,7 @@ class GameControl{
 		else if( radioBotO.checked ){
 			Bot.botFig = "○";
 			Bot.lock = false;
-			console.log( "Now Y - is bot" )
+			console.log( "Now O - is bot" )
 		}
 		else if( radioBotNone.checked )
 			Bot.lock = true;

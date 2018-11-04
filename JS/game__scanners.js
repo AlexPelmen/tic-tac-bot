@@ -249,6 +249,8 @@ class GameScannner{
 					}
 				}
 				atks[p].forEach( ( a )=>{
+					if( a.capability > 5 )
+						a.capability = 5;
 					weight += ATTACK_WEIGHT[a.capability][a.potential] / a.divider;
 				});
 			})

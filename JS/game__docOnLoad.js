@@ -3,7 +3,8 @@ var Scanner = new GameScannner;
 var Model = new GameModel;
 var View = new GameView;
 var Control = new GameControl;
-var Bot = new GameBot;
+var Bot = new GameBot( '○' );
+var Bot2 = new GameBot( '×' );
 
 
 $( document ).ready( () => {
@@ -12,8 +13,6 @@ $( document ).ready( () => {
 	Model.documentLoad();
 
 	View.updateCellsForWeightsDisplay();
-	/*if( Bot.botFig == Model.whoPlays.char )
-		Bot.makeMove();*/
 })
 
 //Keys (it's temporary)
@@ -24,7 +23,7 @@ $( document ).keydown( ( e )=>{
 			var bl = $( Model.selectedCell ); 
 			Scanner.testCell( bl )
 		break;
-		case 65:
+		case 65: 	//A
 			var bl = $( Model.selectedCell ); 
 			var x = +bl.attr( "index-i" );
 			var y = +bl.attr( "index-j" );
@@ -32,5 +31,11 @@ $( document ).keydown( ( e )=>{
 		break;
 		case 67: 	//C
 			console.clear();
+		break;
+		case 68:
+			Bot2.makeMove();
+		break;
+		case 27:
+			View.hideBotSettings();
 	}		
 })
