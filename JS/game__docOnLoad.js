@@ -21,7 +21,14 @@ $( document ).keydown( ( e )=>{
 	var key = e.keyCode;
 	switch( key ){
 		case 84: 	//T
-
+			var bl = $( Model.selectedCell ); 
+			Scanner.testCell( bl )
+		break;
+		case 65:
+			var bl = $( Model.selectedCell ); 
+			var x = +bl.attr( "index-i" );
+			var y = +bl.attr( "index-j" );
+			console.dir( Scanner.getAttacks( x, y ) )
 		break;
 		case 67: 	//C
 			console.clear();

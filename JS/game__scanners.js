@@ -1,4 +1,14 @@
-WIN_NUM = 5;
+DEBUG_MODE = false;
+
+//debug function
+function debug( p ){
+	if( DEBUG_MODE ){
+		if( typeof(p) == "object" || typeof(p) == "array" )
+			console.dir( p );
+		else
+			console.log( p );
+	}
+}
 
 //costs of attacks (weights)   [ capability, potential ]
 ATTACK_WEIGHT = [[],[],[],[],[],[]];
@@ -13,6 +23,8 @@ ATTACK_WEIGHT[2][2] = 5
 ATTACK_WEIGHT[3][2] = 7
 ATTACK_WEIGHT[4][2] = 100
 ATTACK_WEIGHT[5][2] = 200
+
+ATTACK_WEIGHT[5][0] = 200;
 
 
 
@@ -66,21 +78,21 @@ class checkLine{
 			this.checkEdge = true;						
 		else if( this.iter == 5 ){					//if, it's edge
 			this.checkEdgeCell( x, y );
-			//console.log( "checking is over!" )
+			if( DEBUG_MODE ) console.log( "checking is over!" )
 			return 0;
 		}
 		this.iter++
 
 		
 		if( fig == '○' || fig == '×' ){ 	//some figure
-			//console.log( "Figure " + fig  )
+			debug( "Figure " + fig  )
 			if( this.subFig != fig ){
 				this.Attacks.push( this.curAttack );
-				//console.log( "Interapted" )
+				debug( "Interapted" )
 				return fig;
 			}  			
 			else{
-				//console.log( "Increase capability" )
+				debug( "Increase capability" )
 				this.curAttack.capability++;
 				this.attackplace++;
 			}
@@ -88,42 +100,42 @@ class checkLine{
 		
 		else if( fig == 'b' ){				//border
 			this.Attacks.push( this.curAttack );
-			//console.log( "border" )
-			//console.log( "Interapted" )
+			debug( "border" )
+			debug( "Interapted" )
 			return 'b';
 		}
 
 		else{								//empty cell
-			//console.log( "Empty cell" )
+			debug( "Empty cell" )
 			if( this.curAttack.capability ){
 				this.curAttack.potential++;
 				this.Attacks.push( this.curAttack );
 				this.curAttack = new Attack;
 				this.curAttack.potential++;
 
-				//console.log( "Increase potencial" )
-				//console.log( "Create new attack" )				
+				debug( "Increase potencial" )
+				debug( "Create new attack" )				
 			}		
 			this.curAttack.divider++;
 			this.attackplace++;	
-			//console.log( "Increase divider" )	
+			debug( "Increase divider" )	
 		}	
 	}
 
 	substitudeFigure( fig ){
 		this.subFig = fig;
 		this.curAttack.capability++;
-		//console.log( "Substitude " + fig )
-		//console.log( "Increase capability" )
+		debug( "Substitude " + fig )
+		debug( "Increase capability" )
 	}
 
 	checkEdgeCell( x, y ){
 		if( this.checkEdge ){	//long attack, we need to check potencial of this
 			var fig = Model.Field[x] && Model.Field[x][y] !== undefined ? Model.Field[x][y] : 'b';
-			//console.log( fig );
+			debug( fig );
 			if( fig == this.curFig || fig == 0 ){
 				this.curAttack.potential++;
-				//console.log( "Increase potential" )
+				debug( "Increase potential" )
 			}
 			if( this.curAttack.capability )
 				this.Attacks.push( this.curAttack )
@@ -136,7 +148,7 @@ class checkLine{
 		this.checkEdge = false;
 		this.curAttack = this.Attacks[0];	//center attack
 		this.Attacks.splice(0,1)			//remove first element, cause it's center attack
-		//console.log( "Turn around" )
+		debug( "Turn around" )
 	}
 }
 
@@ -149,8 +161,8 @@ class GameScannner{
 		this.gBorder = {
 			left: 	Infinity,
 			top: 	Infinity,
-			right: 	0,
-			bottom: 0
+			right: 	-1,
+			bottom: -1
 		}
 		//previews figure 
 		this.preFig = null;
@@ -209,10 +221,8 @@ class GameScannner{
 
 	testCell( bl ){
 		var x = +bl.attr( "index-i" );
-		var y = +bl.attr( "index-j" );
-		var res = this.countWeight( x,y );
-		if( res )			
-			View.showTestWeight( bl, res );
+		var y = +bl.attr( "index-j" );			
+		View.showCellWeight( x, y );
 	}
 
 
@@ -231,10 +241,10 @@ class GameScannner{
 
 			[ "0", "45", "90", "135" ].forEach( ( p )=>{
 				if( this.isBreakPoint( atks[p] ) ){
-					//console.log( "Break point" )
+					debug( "Break point" )
 					if( ++breakPoints == 2 ){
 						weight = 100;
-						//console.log( "Pizdataya kletka" )
+						debug( "Pizdataya kletka" )
 						return;
 					}
 				}
@@ -300,8 +310,8 @@ class GameScannner{
 		var res = []
 		if( attackLine.attackplace >= 5 )
 			attackLine.Attacks.forEach( ( a )=>{
-				if( a.capability && a.potential )			
-					res.push( a )							
+				if( a.capability && a.potential || a.capability >= 5 )			
+					res.push( a )				
 			})
 		attackLine.Attacks = res;
 		return res

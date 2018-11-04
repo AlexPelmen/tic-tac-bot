@@ -13,15 +13,18 @@ const SECOND_PLAYER = new Player( "○", "figure-O" );
 class GameModel{
 	constructor(){
 		//width of the game field in number of cells
-		this.gameW = 50;
+		this.gameW = 30;
 		//height of the game field in number of cells
-		this.gameH = 50;
+		this.gameH = 20;
 		//matrix ( game field )
 		this.Field = this.initField();
 		//what figure would be set in the next step
 		this.whoPlays = FIRST_PLAYER;
 		//the cell, which is currently targeted by selector
 		this.selectedCell = null;
+
+		//pause game
+		this.lock = false;
 	}
 
 	documentLoad(){
@@ -31,9 +34,9 @@ class GameModel{
 
 	initField(){
 		var Field = [];
-		for( var i = 0; i < this.gameH; i++ ){
+		for( var i = 0; i < this.gameW; i++ ){
 			Field[i] = [];
-			for( var j = 0; j < this.gameW; j++ )
+			for( var j = 0; j < this.gameH; j++ )
 				Field[i][j] = 0;
 		}
 		return Field;		
@@ -45,8 +48,10 @@ class GameModel{
 		Scanner.addPointToBorders( x, y );
 		if( SHOW_WEIGHTS ) View.showWeights( x, y );
 
-		if( Scanner.checkWin( x, y ) )
-			alert( "'" + this.Field[x][y] + "'" + " wins" )
+		if( Scanner.checkWin( x, y ) ){
+			this.lock = true;
+			View.showWinner( this.Field[x][y] );
+		}
 	}
 
 	selectFigure( bl ){
@@ -163,6 +168,54 @@ class GameView{
 		})
 		$( ".game-cell" ).append( p );	
 	}
+
+	showWinner( w ){
+		var st = $( "#statusText" );
+		console.dir( st )
+		st.html( w );
+
+		if( st.hasClass( "textX" ) ) 
+			st.removeClass( "textX" );
+		if( st.hasClass( "textO" ) ) 
+			st.removeClass( "textO" );
+
+		( w == '×' ) ? st.addClass( "textX" ) : st.addClass( "textO" );
+
+		$( "#winnerWindow" ).css( "visibility", "visible" );		
+	}
+	hideWinner(){
+		$( "#winnerWindow" ).css( "visibility", "hidden" );		
+	}
+
+	clearField(){
+		var cells = $( ".game-cell" );
+		cells.removeClass( "figure" );
+		cells.removeClass( "figure-X" );
+		cells.removeClass( "figure-O" );
+		cells.html( "" );
+	}
+
+	showBotSettings(){
+		$( "#settingsWindow" ).css( "visibility", "visible"  );
+	}
+
+	hideBotSettings(){
+		$( "#settingsWindow" ).css( "visibility", "hidden"  );
+	}
+
+	focus( cell ){
+		cell = $( cell );
+		var x = cell.offset().left;
+		var y = cell.offset().top;
+
+		x = x - screen.width / 2;
+		y = y - screen.height / 2;
+
+		if( x < 0 ) x = 0;
+		if( y < 0 ) y = 0;
+
+		window.scrollTo( x, y );
+	}
 }
 
 
@@ -181,17 +234,61 @@ class GameControl{
 	}
 
 	selectorDblClick(){
+		if( Model.lock ) return;
 		var bl = $( Model.selectedCell );
 		if( ! bl.hasClass( "figure" ) ){
 			var x = bl.attr( 'index-i' );
 			var y = bl.attr( 'index-j' );
+
+			View.setFigure( bl );	
 			Model.setFigure( x, y );
-			View.setFigure( bl );						
-			Model.switchPlayer();
-			View.switchMenuFigure();
+			View.switchMenuFigure();					
+			Model.switchPlayer();	
+
+			if( Bot.botFig == Model.whoPlays.char )
+				Bot.makeMove();		
 		}
 
-		if( Bot.botFig == Model.whoPlays.char )
+		
+	}
+
+	again(){
+		Model.Field = Model.initField();
+		View.hideWinner();
+		View.clearField();
+		Scanner.gBorder = {
+			left: 	Infinity,
+			top: 	Infinity,
+			right: 	-1,
+			bottom: -1
+		}
+		Model.lock = false;
+		if( Model.whoPlays.char == "○" ){
+			View.switchMenuFigure();
+			Model.switchPlayer();
 			Bot.makeMove();
+		}	
+	}
+
+	focus(){
+		var cell = $( ".game-cell.figure" )[0];
+		View.focus( cell )
+	}
+
+	confirmSettings(){
+		if( radioBotX.checked ){
+			console.log( "Now X - is bot" )
+			Bot.lock = false;
+			Bot.botFig = "×";
+		}
+		else if( radioBotO.checked ){
+			Bot.botFig = "○";
+			Bot.lock = false;
+			console.log( "Now Y - is bot" )
+		}
+		else if( radioBotNone.checked )
+			Bot.lock = true;
+		View.hideBotSettings();
+		Bot.makeMove();
 	}
 }

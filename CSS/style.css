@@ -1,6 +1,11 @@
+#gameField{
+    margin: 20px;
+    margin-top: 70px;
+}
+
 .game-cell{
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background: #ddd;
     overflow: hidden;
 }
@@ -11,8 +16,8 @@
 
 #gameSelector{
     position: absolute;
-    width: 66px;
-    height: 66px;
+    width: 55px;
+    height: 55px;
     border: 3px solid #87d9ff;
 }
 
@@ -30,7 +35,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 60px;
+    font-size: 50px;
     padding-bottom: 10px;
 }
 
@@ -51,6 +56,7 @@
     height: 60px;
     border-radius: 5px;
     box-shadow: 0 5px 3px rgba(0,0,0,0.3);
+    margin: 0px 10px;
 }
 
 .menu__text{
@@ -58,6 +64,16 @@
     padding-left: 30px;
     padding-top: 10px;
     width: 90px;
+}
+
+#setButton{
+    height: 60px;
+    margin: 0px 10px;
+}
+
+#focusBtn{
+    height: 60px;
+    margin: 0px 10px;
 }
 
 .cell-weight{
@@ -71,4 +87,80 @@
     text-align: center;
     padding: 0px 5px;
     border-radius: 3px;
+}
+
+
+
+
+/*winnerWindow settings*/
+
+.window{
+    visibility: hidden;
+    position: fixed;
+    top: 200px;
+    width: 300px;
+    left: calc(50% - 150px);
+
+    background: #eee;
+    box-shadow: 10px 10px 5px 0px rgba( 0,0,0, 0.3 );
+    padding: 30px;
+}
+
+.window h3{
+    text-align: center;
+    color: #777;
+    font-weight: 200;
+    border-bottom: 1px solid #777;
+}
+
+.btn{
+    background: #6fb1c8;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    font-size: 20px;
+    box-shadow: 5px 5px 5px 0px rgba( 0,0,0, 0.2 );
+}
+
+#againBtn{
+    display: block;
+    width: 70%;
+    margin: 30px auto;    
+}
+
+.status{
+    text-align: center;
+
+}
+
+.textX{
+    color: red;
+    font-size: 30px;
+}
+
+.textO{
+    color: blue;
+    font-size: 30px;
+}
+
+
+/*settings window*/
+
+#settingsButton{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+#settingsButton:hover{
+    opacity: 1;
+}
+
+#okBtn{
+    display: block;
+    width: 70%;
+    margin: 30px auto; 
 }
