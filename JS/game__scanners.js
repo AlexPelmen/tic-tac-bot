@@ -27,15 +27,6 @@ ATTACK_WEIGHT[5][2] = 200
 ATTACK_WEIGHT[5][0] = 200;
 
 
-
-var stepStatistic = {
-	currentAttacks: [],			//attacks of current player (whose step is going on)
-	opponentAttacks: [],		//opponents attacks
-} 
-
-
-
-
 class Attack{
 	constructor( cap = 0, pot = 0, div = 1 ){
 		this.capability = cap;
@@ -68,6 +59,28 @@ class checkLine{
 
 		this.attackplace = 1;			//number of cells, which potencially could be used for attack
 										//if it number less then 5 - there's could be no attacks at all
+	}
+
+	getAttacks( cellX, cellY, subFig, dx, dy ){	
+		this.substitudeFigure( subFig );	
+
+		for( 
+			var x = cellX - dx, y = cellY - dy; 
+			Math.abs( x - cellX ) <= 5 && Math.abs( y - cellY ) <= 5; 
+			x -= dx, y -= dy 
+		)		
+			if( this.checkCell( x, y ) ) break;
+
+		this.turnAround();
+
+		for( 
+			var x = cellX + dx, y = cellY + dy; 
+			Math.abs( x - cellX ) <= 5 && Math.abs( y - cellY ) <= 5; 
+			x += dx, y += dy 
+		)			
+			if( this.checkCell( x, y ) ) break;
+
+		return this.Attacks;		
 	}
 
 	checkCell( x, y ){	
@@ -227,15 +240,16 @@ class GameScannner{
 
 
 	countWeight( x, y ){
-		var attacks = this.getAttacks( x, y )
+		var attacks = this.getAllAttacks( x, y )
 		if( ! attacks ) return;
 		var sum = 0; 
-		sum += count.call( this,  attacks.x );	
-		sum += count.call( this,  attacks.o );
+
+		sum += count.call( this,  attacks.x, '×' );	
+		sum += count.call( this,  attacks.o, '○' );
 
 		return sum
 
-		function count( atks ){
+		function count( atks, curFig ){
 			var weight = 0;
 			var breakPoints = 0;
 
@@ -243,14 +257,16 @@ class GameScannner{
 				if( this.isBreakPoint( atks[p] ) ){
 					debug( "Break point" )
 					if( ++breakPoints == 2 ){
-						weight = 100;
-						debug( "Pizdataya kletka" )
+						weight += 100;
+						debug( "Good cell" )
 						return;
 					}
 				}
 				atks[p].forEach( ( a )=>{
-					if( a.capability > 5 )
+					if( a.capability > 5 ) 
 						a.capability = 5;
+					if( a.capability == 5 && curFig == Model.whoPlays.char ) //it means, that we just can win with this step
+						weight += 100;
 					weight += ATTACK_WEIGHT[a.capability][a.potential] / a.divider;
 				});
 			})
@@ -258,7 +274,7 @@ class GameScannner{
 		}
 	}
 
-	getAttacks( cellX, cellY ){
+	getAllAttacks( cellX, cellY ){
 		if( Model.Field[ cellX ][ cellY ] )	//smth is in the cell yet 
 			return false
 
@@ -281,27 +297,10 @@ class GameScannner{
 		}	
 	}
 
+
 	getAttacksLine( cellX, cellY, subFig, dx, dy ){	
 		var C = new checkLine;
-
-		C.substitudeFigure( subFig );
-		
-		for( 
-			var x = cellX - dx, y = cellY - dy; 
-			Math.abs( x - cellX ) < 6 && Math.abs( y - cellY ) < 6; 
-			x -= dx, y -= dy 
-		)		
-			if( C.checkCell( x, y ) ) break;
-
-		C.turnAround();
-
-		for( 
-			var x = cellX + dx, y = cellY + dy; 
-			Math.abs( x - cellX ) < 6 && Math.abs( y - cellY ) < 6; 
-			x += dx, y += dy 
-		)			
-			if( C.checkCell( x, y ) ) break;
-
+		C.getAttacks( cellX, cellY, subFig, dx, dy );
 		return this.filterAttacks( C )		
 	}
 
